@@ -1,0 +1,203 @@
+<p-toast></p-toast>
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button class="btn btn-success mr-2" (click)="openNew()"><i class="align-middle mr-2" data-feather="user-plus"></i> <span class="align-middle"></span>Ajouter</button>
+            <button class="btn btn-danger" (click)="deleteOneColis()" [disabled]="!selectedFreights || !selectedFreights.length"><i class="align-middle mr-2" data-feather="trash-2"></i> <span class="align-middle"></span>Supprimer</button> 
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <div class="p-d-flex">
+                <div id="input_container">
+                    <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Chercher..."/>
+                    <i data-feather="search" id="input_img"></i>
+                </div>
+            </div>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="colises" [rows]="10" [paginator]="true" [globalFilterFields]="['username','email']"
+        [(selection)]="selectedColises" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox [value]="colises"> </p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="numCommande">Réf Colis<p-sortIcon field="numCommande"></p-sortIcon></th>
+                <th >Image</th>
+                <th pSortableColumn="nomDestinataire">Nom Destinataire <p-sortIcon field="nomDestinataire"></p-sortIcon></th>
+                <!-- <th>Image</th> -->
+                <th pSortableColumn="prenomDestinataire">prenom Destinataire<p-sortIcon field="prenomDestinataire"></p-sortIcon></th>
+              <!--   <th pSortableColumn="countryDestinataire">countryDestinataire<p-sortIcon field="countryDestinataire"></p-sortIcon></th> -->
+                <th pSortableColumn="stateDestinataire">Ville<p-sortIcon field="stateDestinataire"></p-sortIcon></th>
+                <th pSortableColumn="adresseDestinataire">Adresse<p-sortIcon field="adresseDestinataire"></p-sortIcon></th>
+                <th pSortableColumn="dateLivraison">Date Livraison<p-sortIcon field="dateLivraison"></p-sortIcon></th>
+                
+                <th pSortableColumn="size">Taille Colis<p-sortIcon field="size"></p-sortIcon></th>
+                <th pSortableColumn="etat">Etat Colis<p-sortIcon field="etat"></p-sortIcon></th> 
+       
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" id="height-50" let-colis>
+            <tr [pSelectableRow]="colis" >
+                <td>
+                    <p-tableCheckbox [value]="colis"></p-tableCheckbox>
+                </td>
+                <td>{{colis.numCommande}}</td>
+                <td><img [src]="imageUrl + colis?.imageColis[0].imageName" [alt]="colis.companyName" style="display:inline-block;margin:2px 0 2px 2px" width="48" class="p-shadow-4" /></td>
+                <td>{{colis.nomDestinataire}}</td>
+               <!--  <td><img [src]="imageUrl + colis?.logo" [alt]="colis.companyName" width="100" class="p-shadow-4" /></td> -->
+                <td>{{colis.prenomDestinataire}}</td>
+               <!--  <td>{{colis.countryDestinataire}}</td> -->
+                <td>{{colis.stateDestinataire}}</td>
+                <td>{{colis.adresseDestinataire}}</td>
+               <!--  <td>{{colis.companyAddress}}, {{ colis.zipCode}}</td> -->
+               <td>{{colis.dateLivraison}}</td>
+              
+               <td>{{colis.size}}</td>
+                <td>{{colis.etat}}</td>
+               
+               
+               
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                        (click)="editColis(colis)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteOneColis(colis)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                In total there are {{colises ? colises.length : 0 }} colis.
+            </div>
+        </ng-template>
+    </p-table>
+
+   
+</div>
+
+<p-dialog [(visible)]="colisDialog" [style]="{width: '600px'}" header="Modifier colis" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+
+
+<!-- 
+        <div class="p-field">
+            <label for="etat">Etat colis</label>
+          
+             <select id="etat" [(ngModel)]="primaryMode" (ngModelChange)="primaryModeChangeHandler($event)">
+                 <option [ngValue]="null">Select one...</option> 
+                <option *ngFor="let etat of propertyType" [value]="etat" [ngValue]="etat" [label]="etat">{{etatColis[etat]}}</option>   
+            </select>
+            <small class="p-invalid" *ngIf="submitted && !selectedEtat">Size is required.</small>
+        </div> -->
+                   <!--   <select (change)="parseValue($event.target.value)">
+                <option>--select--</option>
+                <option *ngFor="let name of propertyType"
+                    [value]="name.key">{{name}}</option>
+              </select>
+ -->
+
+
+     
+
+     
+        <div class="p-field">
+            <label for="code">Réference colis</label>
+            <input type="text" pInputText id="code" [(ngModel)]="colis.code" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !colis.code">Réference is required.</small>
+        </div>
+
+
+        <div class="p-field">
+            <label for="numCommande">Num Commande</label>
+            <input type="text" pInputText id="numCommande" [(ngModel)]="colis.numCommande" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !colis.numCommande">Num Commande is required.</small>
+        </div>
+
+
+
+        <div class="p-field">
+            <label for="sizes">Taille colis</label>
+            <p-dropdown [options]="sizes" optionLabel="value" (onChange)="selectedSize($event)" placeholder="Choisir taille du colis" [maxSelectedLabels]="1">
+                <ng-template let-size pTemplate="size">
+                    <i class="align-middle mr-2 {{size.label}}"></i> <span class="align-middle">{{size.value}}</span>
+               </ng-template>
+            </p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !size">description is required.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="deliveryTypes">Type de livraison</label>
+            <p-dropdown [options]="deliveryTypes" optionLabel="label" (onChange)="selectedDeliveryType($event)" placeholder="Choisir type de livraison" [maxSelectedLabels]="1">
+                <ng-template let-type pTemplate="type">
+                   {{ type.label }}
+               </ng-template>
+            </p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !size">description is required.</small>
+        </div>
+ 
+
+
+        <div class="p-field">
+            <label for="nomDestinataire">Nom Destinataire</label>
+            <input type="text" pInputText id="nomDestinataire" [(ngModel)]="colis.nomDestinataire" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !colis.nomDestinataire">Entreprise is required.</small>
+        </div>
+   
+        <div class="p-field">
+            <label for="prenomDestinataire">Prenom Destinataire</label>
+            <input type="text" pInputText id="prenomDestinataire" [(ngModel)]="colis.prenomDestinataire" required />
+            <small class="p-invalid" *ngIf="submitted && !colis.prenomDestinataire">prenomDestinataire is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="phoneNumberDestinataire">Numero Destinataire</label>
+            <input type="text" pInputText id="phoneNumberDestinataire" [(ngModel)]="colis.phoneNumberDestinataire" required />
+            <small class="p-invalid" *ngIf="submitted && !colis.phoneNumberDestinataire">prenomDestinataire is required.</small>
+        </div>
+
+
+  
+        <div class="p-field">
+            <label for="countryDestinataire">Pays Destinataire</label>
+            <p-dropdown [options]="countries" placeholder="Choisir votre pays" [(ngModel)]="selectedCity" (ngModelChange)="onChangeCountry($event)" optionLabel="name" optionDisabled="inactive"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !selectedCity">Pays is required.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="stateDestinataire">Gouvernorat Destinataire</label>
+            <p-dropdown [options]="states" placeholder="Choisir votre governorat" [(ngModel)]="selectedState" (ngModelChange)="onChangeState($event)" optionLabel="name" optionDisabled="inactive"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !selectedState">state is required.</small>
+        </div>
+         
+        <div class="p-field">
+            <label for="adresseDestinataire">Adresse Destinataire</label>
+            <input type="text" pInputText id="adresseDestinataire" [(ngModel)]="colis.adresseDestinataire" required/>
+            <small class="p-invalid" *ngIf="submitted && !colis.adresseDestinataire">Adresse is required.</small>
+        </div>
+
+
+
+        <div class="p-field">
+            <label for="dateLivraison">Date de Livraison</label>
+            <input type="date" pInputText id="dateLivraison" [(ngModel)]="colis.dateLivraison" required/>
+            <small class="p-invalid" *ngIf="submitted && !colis.dateLivraison">Adresse is required.</small>
+        </div>
+
+      
+        <div class="p-field">
+            <label class="form-label w-100">Image du colis</label>
+            <input type="file" (change)="selectFile($event)" multiple/>
+            <small class="p-invalid" *ngIf="submitted && !colis.image">Logo is required.</small>
+        </div> 
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+       <!--  <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button> -->
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveColis()"></button> 
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

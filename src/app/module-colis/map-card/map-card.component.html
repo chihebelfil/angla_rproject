@@ -1,0 +1,71 @@
+<div class="card">
+    <agm-map appDirectionsMap [showDirection]="showDirection"
+        [origin]="colis.commercialProvider.country +','+colis.commercialProvider.city+','+colis.commercialProvider.companyAddress"
+        [destination]="colis.countryDestinataire +','+ colis.stateDestinataire" [zoom]="zoom" [disableDefaultUI]="false"
+        [zoomControl]="false">
+        <div *ngIf="markers.length>1">
+            <agm-marker *ngFor="let marker of markers; let i = index" [latitude]="marker.lat" [longitude]="marker.lng"
+                [label]="marker.label">
+
+                <agm-info-window>
+                    <strong *ngIf="marker.commercialProvider">{{marker?.commercialProvider?.companyName}} |
+                    </strong>{{marker.address}}
+                </agm-info-window>
+            </agm-marker>
+        </div>
+
+    </agm-map>
+
+    <div class="card-header">
+        <div class="row d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0"><i class="align-middle fas fa-fw fa-shopping-bag"></i> <span
+                    class="align-middle">{{ colis.commercialProvider.companyName }}</span></h5>
+            <h5 class="badge badge-warning mt-2 align-middle">
+                Taille: {{ colis.size }}
+                <i *ngIf="colis.size == 'XS'" class="align-middle fas fa-fw fa-glasses"></i>
+                <i *ngIf="colis.size == 'S'" class="align-middle fas fa-fw fa-book"></i>
+                <i *ngIf="colis.size == 'M'" class="align-middle fas fa-fw fa-desktop"></i>
+                <i *ngIf="colis.size == 'L'" class="align-middle fas fa-fw fa-guitar"></i>
+                <i *ngIf="colis.size == 'XL'" class="align-middle fas fa-fw fa-couch"></i>
+                <i *ngIf="colis.size == 'XXL'" class="align-middle fas fa-fw fa-warehouse"></i>
+            </h5>
+            <small class="float-right text-navy">Publié: {{colis.created | date}}</small>
+        </div>
+    </div>
+    <div class="delivery-type d-flex justify-content-center">
+        <div class="badge badge-danger align-middle" id="bold" *ngIf="colis.deliveryType == 'SUPER_RUSH'">Livraison
+            super urgente | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison | date}}</div>
+        <div class="badge badge-warning align-middle" id="bold" *ngIf="colis.deliveryType == 'RUSH'">Livraison urgente |
+            <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison | date}}</div>
+        <div class="badge badge-info align-middle" id="bold" *ngIf="colis.deliveryType == 'SAME_DAY'">Livraison le jour
+            même | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison | date}}</div>
+        <div class="badge badge-success align-middle" id="bold" *ngIf="colis.deliveryType == 'NEXT_DAY'">Livraison le
+            lendemain | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison | date}}</div>
+        <div class="badge badge-primary align-middle" id="bold" *ngIf="colis.deliveryType == 'STANDARD'">Livraison
+            standard | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison | date}}</div>
+    </div>
+    <div class="card-body">
+        <div class="row" id="wrapper">
+            <div id="left">
+                <h5>
+                    <i class="align-middle mr-2 fas fa-fw fa-map"></i>
+                    <span class="align-middle">Départ</span>
+                </h5>
+                <p class="card-text">{{colis.commercialProvider.country}}, {{colis.commercialProvider.city}},
+                    {{colis.commercialProvider.companyAddress}}</p>
+            </div>
+            <div id="right">
+                <h5>
+                    <i class="align-middle mr-2 fas fa-fw fa-map-marker-alt"></i>
+                    <span class="align-middle">Arrivé</span>
+                </h5>
+                <p class="card-text">{{ colis.countryDestinataire }}, {{ colis.stateDestinataire }}, {{
+                    colis.adresseDestinataire }}</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-2">
+            <a href="#" class="btn btn-primary" [routerLink]="['/colis/detail',colis.id]">Voir détail</a>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,198 @@
+<p-toast></p-toast>
+<div class="row" *ngIf="!showLoadingView">
+    <div class="col-12 col-md-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Filters</h5>
+            </div>
+            <div class="card-body">
+                <div class="media">
+                    <div class="media-body">
+                        <form [formGroup]="optimizationForm" (ngSubmit)="onSubmit()">
+
+                            <div class="p-field">
+                                <p-dropdown [style]="{ width: '100%'}" [options]="optimizationTypes"
+                                    formControlName="selectOptimizationType" placeholder="Select optimization type"
+                                    optionLabel="type" optionValue="code" [showTransitionOptions]="'200ms'"
+                                    [hideTransitionOptions]="'200ms'" (onChange)="onChangeOptimization($event)"
+                                    required>
+                                </p-dropdown>
+                                <div *ngFor="let error of errorMessages.selectOptimizationType">
+                                    <ng-container
+                                        *ngIf="selectOptimizationType.hasError(error.type) && (selectOptimizationType.dirty || selectOptimizationType.touched)">
+                                        <small class="alert-danger">{{error.message}}</small>
+                                    </ng-container>
+                                </div>
+                            </div>
+
+                            <div class="p-field">
+                                <p-dropdown [style]="{ width: '100%'}" [options]="etatsColis"
+                                    formControlName="selectedColisState" placeholder="Select Colis State"
+                                    optionLabel="name" optionValue="code" [showTransitionOptions]="'200ms'"
+                                    [hideTransitionOptions]="'200ms'" (onChange)="onChange($event)" required>
+                                </p-dropdown>
+                                <div *ngFor="let error of errorMessages.selectedColisState">
+                                    <ng-container
+                                        *ngIf="selectedColisState.hasError(error.type) && (selectedColisState.dirty || selectedColisState.touched)">
+                                        <small class="alert-danger">{{error.message}}</small>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="p-field">
+                                <p-multiSelect [style]="{ width: '100%'}" [options]="listColis" optionLabel="id"
+                                    defaultLabel="Select Colis" formControlName="selectedColis"
+                                    class="multiselect-custom" [showTransitionOptions]="'200ms'"
+                                    [hideTransitionOptions]="'200ms'" required>
+                                    <ng-template let-value pTemplate="listColis">
+                                        <div class="country-item country-item-value">
+                                            <div>{{value.id}} | {{value.code}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-multiSelect>
+                                <div *ngFor="let error of errorMessages.selectedColis">
+                                    <ng-container
+                                        *ngIf="selectedColis.hasError(error.type) && (selectedColis.dirty || selectedColis.touched)">
+                                        <small class="alert-danger">{{error.message}}</small>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="p-field">
+                                <p-multiSelect [style]="{ width: '100%'}" [options]="deliveryMEN" optionLabel="username"
+                                    defaultLabel="Select Delivery Men" formControlName="selectedDeliveryMEN"
+                                    class="multiselect-custom" [showTransitionOptions]="'200ms'"
+                                    [hideTransitionOptions]="'200ms'" required>
+                                    <ng-template let-deliveryMAN pTemplate="deliveryMEN">
+                                        <div class="country-item country-item-value">
+                                            <div>{{deliveryMAN.id}} | {{deliveryMAN.firstName}} {{deliveryMAN.lastName}}
+                                            </div>
+                                        </div>
+                                    </ng-template>
+                                </p-multiSelect>
+                                <div *ngFor="let error of errorMessages.selectedDeliveryMEN">
+                                    <ng-container
+                                        *ngIf="selectedDeliveryMEN.hasError(error.type) && (selectedDeliveryMEN.dirty || selectedDeliveryMEN.touched)">
+                                        <small class="alert-danger">{{error.message}}</small>
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div class="btn-submit">
+                                <button pButton label="Filtrer" type="submit" class="p-button-raised p-button-rounded"
+                                    icon="pi pi-check">
+                                </button>
+                                <button pButton label="Reset" type="submit"
+                                    class="p-button-warning p-button-raised p-button-rounded" icon="pi pi-refresh">
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <hr class="my-2 mt-3" />
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="content" style="height: 500px;">
+                    <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box"
+                        [fullScreen]="false">
+                        <p style="color: white"> Loading... </p>
+                    </ngx-spinner>
+                    <app-routing-map (sendAllMarkers)="recieveMarkers($event)" [routes]="routes"
+                        [origin]="dataModel.origin" [destinations]="dataModel.destinations">
+                    </app-routing-map>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div *ngFor="let route of routes; let i=index">
+                    <div class="media">
+                        <div class="media-body">
+                            <p-chip image="/assets/img/avatars/avatar.jpg" styleClass="p-mr-2 custom-chip"
+                                label="{{deliveryMEN[route.deliveryManIndex].id}} | {{deliveryMEN[route.deliveryManIndex].firstName}} {{deliveryMEN[route.deliveryManIndex].lastName}}">
+                            </p-chip>
+                        </div>
+                    </div>
+
+                    <p-timeline [value]="route.colis" layout="horizontal">
+                        <ng-template pTemplate="marker" let-colis>
+                            <span class="custom-marker p-shadow-2" [style.backgroundColor]="colors[i]">
+                                {{route.colis | indexOf:colis | nextChar}}
+                            </span>
+                        </ng-template>
+                        <ng-template pTemplate="content" let-colis>
+                            <button pButton label="Detail" (click)="showDetail(colis)" type="button" class="p-button-raised p-button-rounded"
+                                icon="pi pi-eye">
+                            </button>
+                        </ng-template>
+                    </p-timeline>
+                    <hr />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" *ngIf="showLoadingView">
+    <div class="p-grid p-formgrid">
+        <div class="p-field p-col-12 p-md-6 p-pr-md-6 p-pr-0">
+            <h5>Card</h5>
+            <div class="custom-skeleton p-p-4">
+                <p-skeleton width="100%" height="150px"></p-skeleton>
+                <div class="p-d-flex p-jc-between p-mt-3">
+                    <p-skeleton width="4rem" height="2rem"></p-skeleton>
+                    <p-skeleton width="4rem" height="2rem"></p-skeleton>
+                </div>
+            </div>
+        </div>
+        <div class="p-field p-col-12 p-md-6">
+            <h5>List</h5>
+            <div class="custom-skeleton p-p-4">
+                <ul class="p-m-0 p-p-0">
+                    <li class="p-mb-3">
+                        <div class="p-d-flex">
+                            <p-skeleton shape="circle" size="4rem" styleClass="p-mr-2"></p-skeleton>
+                            <div style="flex: 1">
+                                <p-skeleton width="100%" styleClass="p-mb-2"></p-skeleton>
+                                <p-skeleton width="75%"></p-skeleton>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="p-mb-3">
+                        <div class="p-d-flex">
+                            <p-skeleton shape="circle" size="4rem" styleClass="p-mr-2"></p-skeleton>
+                            <div style="flex: 1">
+                                <p-skeleton width="100%" styleClass="p-mb-2"></p-skeleton>
+                                <p-skeleton width="75%"></p-skeleton>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="p-mb-3">
+                        <div class="p-d-flex">
+                            <p-skeleton shape="circle" size="4rem" styleClass="p-mr-2"></p-skeleton>
+                            <div style="flex: 1">
+                                <p-skeleton width="100%" styleClass="p-mb-2"></p-skeleton>
+                                <p-skeleton width="75%"></p-skeleton>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="p-d-flex">
+                            <p-skeleton shape="circle" size="4rem" styleClass="p-mr-2"></p-skeleton>
+                            <div style="flex: 1">
+                                <p-skeleton width="100%" styleClass="p-mb-2"></p-skeleton>
+                                <p-skeleton width="75%"></p-skeleton>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,134 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button class="btn btn-success mr-2" (click)="openNew()"><i class="align-middle mr-2" data-feather="user-plus"></i> <span class="align-middle"></span>Ajouter</button>
+            <button class="btn btn-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedFreights || !selectedFreights.length"><i class="align-middle mr-2" data-feather="trash-2"></i> <span class="align-middle"></span>Supprimer</button>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <div class="p-d-flex">
+                <div id="input_container">
+                    
+                    <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Chercher..."/>
+                    <i data-feather="search" id="input_img"></i>
+                </div>
+            </div>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="freights" [rows]="10" [paginator]="true" [globalFilterFields]="['username','email']"
+        [(selection)]="selectedFreights" [rowHover]="true" dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" styleClass="p-datatable-responsive-demo">
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox [value]="freights"> </p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="companyName">Entreprise <p-sortIcon field="companyName"></p-sortIcon></th>
+                <th>Image</th>
+                <th pSortableColumn="email">Email<p-sortIcon field="email"></p-sortIcon></th>
+                <th pSortableColumn="username">Username<p-sortIcon field="username"></p-sortIcon></th>
+                <th pSortableColumn="country">Pays<p-sortIcon field="country"></p-sortIcon></th>
+                <th pSortableColumn="city">Ville<p-sortIcon field="city"></p-sortIcon></th>
+                <th pSortableColumn="companyAddress">Adresse<p-sortIcon field="companyAddress"></p-sortIcon></th>
+                <th pSortableColumn="phoneNumber">Numéro de téléphone<p-sortIcon field="phoneNumber"></p-sortIcon></th>
+                <th pSortableColumn="created">Date d'ajout<p-sortIcon field="created"></p-sortIcon></th>
+                <th pSortableColumn="isActivated">Status<p-sortIcon field="isActivated"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" id="height-50" let-freight>
+            <tr [pSelectableRow]="freight" >
+                <td>
+                    <p-tableCheckbox [value]="freight"></p-tableCheckbox>
+                </td>
+                <td>{{freight.companyName}}</td>
+                <td><img [src]="imageUrl + freight?.logo" [alt]="freight.companyName" width="100" class="p-shadow-4" /></td>
+                <td>{{freight.email}}</td>
+                <td>{{freight.username}}</td>
+                <td>{{freight.country}}</td>
+                <td>{{freight.city}}</td>
+                <td>{{freight.companyAddress}}, {{ freight.zipCode}}</td>
+                <td>{{freight.phoneNumber}}</td>
+                <td>{{freight.created | date}}</td>
+                <td>{{freight.activated}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                        (click)="editProduct(freight)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteProduct(freight)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                In total there are {{freights ? freights.length : 0 }} freights.
+            </div>
+        </ng-template>
+    </p-table>
+</div>
+
+<p-dialog [(visible)]="freightDialog" [style]="{width: '600px'}" header="Freight Details" [modal]="true" styleClass="p-fluid">
+    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "false"><p style="color: white" > Loading... </p></ngx-spinner>
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="companyName">Entreprise</label>
+            <input type="text" pInputText id="companyName" [(ngModel)]="freight.companyName" required autofocus />
+            <small class="p-invalid" *ngIf="submitted && !freight.companyName">Entreprise is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="email">Email</label>
+            <input id="email" pInputText id="email" [(ngModel)]="freight.email" required/>
+            <small class="p-invalid" *ngIf="submitted && !freight.email">Email is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="username">Username</label>
+            <input type="text" pInputText id="username" [(ngModel)]="freight.username" required />
+            <small class="p-invalid" *ngIf="submitted && !freight.username">Username is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="password">Password</label>
+            <input type="text" pInputText id="password" [(ngModel)]="freight.password" required />
+            <small class="p-invalid" *ngIf="submitted && !freight.password">Password is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="phoneNumber">Phone Number</label>
+            <input type="text" pInputText id="phoneNumber" [(ngModel)]="freight.phoneNumber" required />
+            <small class="p-invalid" *ngIf="submitted && !freight.phoneNumber">Phone Number is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="country">Pays</label>
+            <p-dropdown [options]="countries" placeholder="Choisir votre pays" [(ngModel)]="selectedCity" (ngModelChange)="onChangeCountry($event)" optionLabel="name" optionDisabled="inactive"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !selectedCity">Pays is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="city">Ville</label>
+            <p-dropdown [options]="states" placeholder="Choisir votre governorat" [(ngModel)]="selectedState" (ngModelChange)="onChangeState($event)" optionLabel="name" optionDisabled="inactive"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !selectedState">Etat is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="companyAddress">Adresse</label>
+            <input type="text" pInputText id="companyAddress" [(ngModel)]="freight.companyAddress" required/>
+            <small class="p-invalid" *ngIf="submitted && !freight.companyAddress">Adresse is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="zipCode">Code postal</label>
+            <input type="text" pInputText id="zipCode" [(ngModel)]="freight.zipCode" required/>
+            <small class="p-invalid" *ngIf="submitted && !freight.zipCode">code postal is required.</small>
+        </div>
+        <div class="p-field">
+            <label class="form-label w-100">Logo</label>
+            <input type="file" (change)="selectFile($event)"/>
+            <small class="p-invalid" *ngIf="submitted && !freight.logo">Logo is required.</small>
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveFreight()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>

@@ -1,0 +1,15 @@
+<agm-map appOptimizedRoutes [showDirection]="showDirection" [origin]="origin" [routes]="routes"
+    [destinations]="destinations" [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="false">
+    <div *ngIf="allMarkers.length>1">
+        <div *ngFor="let markers of allMarkers">
+            <agm-marker  *ngFor="let marker of markers; let i = index" [latitude]="marker.lat" [longitude]="marker.lng"
+                [label]="marker.label"
+                [iconUrl]="marker.iconUrl">
+                <agm-info-window>
+                    <strong *ngIf="marker.commercialProvider">{{marker?.commercialProvider?.companyName}} |
+                    </strong>{{marker.address}}
+                </agm-info-window>
+            </agm-marker>
+        </div>
+    </div>
+</agm-map>

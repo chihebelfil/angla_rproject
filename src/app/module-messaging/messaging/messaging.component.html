@@ -1,0 +1,106 @@
+<!-- <input class="form-control" type="text" placeholder="message" [(ngModel)]="input">
+<button class="btn btn-success" (click)="sendMessage()">Send</button>
+<div class="content">
+  <div *ngFor="let msg of messagingService.msg">
+    {{msg}}
+  </div>
+</div> -->
+
+
+
+
+
+
+<!--------------------------------------------------------------------------------------------------------------------------------->
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+  enabled. Please enable
+  Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+
+    <div class="row">
+        <div class="col-md-12">
+           {{ greeting }}
+        </div>
+    </div>
+    
+  <div class="row">
+      <div class="col-md-6">
+          <form class="form-inline">
+              <div class="form-group">
+                  <label for="connect">WebSocket connection:</label>
+                  <button (click)="connect()" class="btn btn-default" type="submit">Connect</button>
+                  <button (click)="disconnect()" class="btn btn-default" type="submit" disabled="disabled">Disconnect
+                  </button>
+              </div>
+          </form>
+      </div>
+      <div class="col-md-6">
+          <form class="form-inline">
+              <div class="form-group">
+                  <label for="name">What is your name?</label>
+                  <input type="text" [(ngModel)]="name" class="form-control" name="name"> <br>
+              </div>
+              <button (click)="sendMessage()" class="btn btn-default" type="submit">Send</button>
+          </form>
+      </div>
+
+      <p> {{ greeting }}</p>
+  </div>
+ 
+</div>
+
+
+
+
+
+
+
+
+ 
+<!-- 
+    <div>
+        <input type="text" name="input" id="message">
+        <button id="btn">Send </button>         
+       
+    </div>
+
+    <div id="recievedMsg">
+
+    </div>
+    <script>
+        var stompClient= null;
+        $(document).ready(function(){
+
+            createConnection();
+
+           $('#btn').click(function(){
+               var message = $('#message').val();
+
+               sendMessage(message);
+               $('#recievedMsg').append('<span> You : ' + message + '</span><br>')
+               $('#message').val('');
+
+           }) 
+
+
+
+            function createConnection(){
+            var socket= new SockJS('http://localhost:8096/socket')
+            stompClient= Stomp.over(socket);
+            stompClient.connect({},function(connectionData){
+                console.log(connectionData);
+                stompClient.subscribe('/topic/publicChatRoom2', function(data){
+                    console.log(data.body);
+                    $('#recievedMsg').append('<span> Sender : ' + data.body + '</span><br>')
+                })
+
+
+            })
+        }
+
+        function sendMessage(message){
+            stompClient.send('app/sendMessage2',{}, message);
+        }
+
+        })
+    </script> -->

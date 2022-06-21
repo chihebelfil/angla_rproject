@@ -1,0 +1,27 @@
+<div class="">
+  <div class="">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sélectionner votre livreur pour livrer ce colis</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="activeModal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body m-3">
+        <div class="form-group">
+          <select class="form-control form-select form-select-sm" aria-label="Sélectionner un livreur" aria-placeholder="Sélectionner un livreur" [(ngModel)]="colis.deliveryMan">
+            <option label="Sélectionner un livreur" disabled selected></option>
+            <option *ngFor="let d of deliveryMEN" [ngValue]="d">{{d.username}}</option>
+          </select>
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss('Button Click')"
+          data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" (click)="passBack()" [disabled]="colis.deliveryMan==null">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

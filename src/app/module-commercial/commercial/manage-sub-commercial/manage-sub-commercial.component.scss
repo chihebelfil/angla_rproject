@@ -1,0 +1,27 @@
+#input_container {
+    position:relative;
+    margin:0 20px;
+    background:#ddd;
+
+}
+#input {
+    margin:0;
+
+    width: 100%;
+}
+#input_img {
+    position:absolute;
+    bottom:7px;
+    right:7px;
+}
+
+th, td {
+    text-align: center;
+    font-size: 0.8em;
+}
+
+:host ::ng-deep {    
+    .p-datatable-responsive-demo .p-datatable-tbody > tr > td .p-column-title {
+        display: block;
+    }
+}

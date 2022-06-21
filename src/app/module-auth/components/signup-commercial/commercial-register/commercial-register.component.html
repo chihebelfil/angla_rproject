@@ -1,0 +1,190 @@
+<div class="card">
+    <div class="card-header">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a routerLink="/home">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="#">S'inscrire</a></li>
+                <li class="breadcrumb-item active">S'inscrire en tant que <strong>&nbsp;grande entreprise
+                        commercial</strong></li>
+            </ol>
+        </nav>
+    </div>
+    <div class="card-body">
+
+        <div id="smartwizard-arrows-primary" class="wizard wizard-primary mb-4">
+            <ul class="nav">
+                <li class="nav-item"><a class="nav-link" href="#commercial-register">Company Information<br /><small>General Information About The Company</small></a></li>
+                <li class="nav-item"><a class="nav-link" href="#arrows-primary-step-2">Administration Account Information<br /><small>Personnel Administrator Account Information</small></a></li>
+                <!-- <li class="nav-item"><a class="nav-link" href="#arrows-primary-step-3">Step Title<br /><small>Step description</small></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#arrows-primary-step-4">Step Title<br /><small>Step description</small></a></li> -->
+            </ul>
+
+            <div class="tab-content">
+                <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+                    <div id="commercial-register" class="tab-pane" role="tabpanel">
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Company Name *</label>
+                                    <input class="form-control form-control-lg" type="text" name="companyName" formControlName="companyName" placeholder="Enter your company name" />
+                                    <div *ngFor="let error of errorMessages.companyName">
+                                        <ng-container  *ngIf="companyName.hasError(error.type) && (companyName.dirty || companyName.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div>                         
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Company Email *</label>
+                                    <input class="form-control form-control-lg" type="email" name="email" formControlName="email" placeholder="Enter your company email" />
+                                    <div *ngFor="let error of errorMessages.email">
+                                        <ng-container  *ngIf="email.hasError(error.type) && (email.dirty || email.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div>  
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Company Phone Number *</label>
+                                    <input class="form-control form-control-lg" type="number" name="phoneNumber" formControlName="phoneNumber" placeholder="Enter your company email" />
+                                    <div *ngFor="let error of errorMessages.phoneNumber">
+                                        <ng-container  *ngIf="phoneNumber.hasError(error.type) && (phoneNumber.dirty || phoneNumber.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div>  
+                                </div>
+                            </div>   
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-label">Country *</label>
+                                    <select class="form-control form-control-lg" (change)="onChangeCountry($event.target.value)" >
+                                        <option [value]="null" disabled>Choisir votre pays</option>
+                                        <option *ngFor="let country of countries" [value]="country.isoCode">{{country.name}}</option>
+                                    </select>
+                                    <div *ngFor="let error of errorMessages.country">
+                                        <ng-container  *ngIf="country.hasError(error.type) && (country.dirty || country.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div>  
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <label class="form-label">City *</label>
+                                        <select class="form-control form-control-lg" (change)="onChangeState($event.target.value)" >
+                                            <option *ngFor="let state of states" [value]="state.isoCode">{{state.name}}</option>
+                                        </select>
+                                    </div>
+                                    <div *ngFor="let error of errorMessages.city">
+                                        <ng-container  *ngIf="city.hasError(error.type) && (city.dirty || city.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Company Address *</label>
+                                    <input class="form-control form-control-lg" type="text" name="companyAddress" formControlName="companyAddress" placeholder="Enter your company address" />
+                                    <div *ngFor="let error of errorMessages.companyAddress">
+                                        <ng-container  *ngIf="companyAddress.hasError(error.type) && (companyAddress.dirty || companyAddress.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Zip Code *</label>
+                                    <input class="form-control form-control-lg" type="text" name="zipCode" formControlName="zipCode" placeholder="Enter your company zip code" />
+                                    <div *ngFor="let error of errorMessages.zipCode">
+                                        <ng-container  *ngIf="zipCode.hasError(error.type) && (zipCode.dirty || zipCode.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div> 
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 pt-12">
+                                <div class="form-group">
+                                    <label for="file-upload" class="custom-file-upload"><i class="align-middle mr-2" data-feather="upload-cloud"></i>Logo Entreprise</label>
+                                    <input  class="form-control form-control-lg" id="file-upload" (change)="selectFile($event)" type="file" name="logo" formControlName="logo" />
+                                    <div *ngFor="let error of errorMessages.logo">
+                                        <ng-container  *ngIf="logo.hasError(error.type) && (logo.dirty || logo.touched)">
+                                            <small class="alert-danger">{{error.message}}</small>
+                                        </ng-container>       
+                                    </div> 
+                                </div>
+                            </div>
+                  
+
+                        </div>
+                    </div>
+
+                        
+                 
+
+                        
+
+                       
+                   
+                    <div id="arrows-primary-step-2" class="tab-pane" role="tabpanel">
+                        Step Content 2
+
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="username">username</label>
+                                <input type="text" formControlName="username" class="form-control" id="username" placeholder="username">
+                                <div *ngFor="let error of errorMessages.username">
+                                    <ng-container  *ngIf="username.hasError(error.type) && (username.dirty || username.touched)">
+                                        <small class="alert-danger">{{error.message}}</small>
+                                    </ng-container>       
+                                </div>                         
+                            </div>
+                        </div>
+
+                      
+                    
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Administrator Password *</label>
+                                <input class="form-control form-control-lg" type="password" name="password" formControlName="password" placeholder="Enter your administrator password" appPassword>
+                                <div *ngFor="let error of errorMessages.password">
+                                    <ng-container  *ngIf="password.hasError(error.type) && (password.dirty || password.touched)">
+                                        <small class="alert-danger">{{error.message}}</small>
+                                    </ng-container>       
+                                </div> 
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <app-loading-sprinner *ngIf="isLoading"></app-loading-sprinner>
+                            <button type="submit" [disabled]="isLoading || !signupForm.valid" class="btn btn-lg btn-primary">Sign up</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <app-error-alert *ngIf="isSignupFailed" [message]="errorMessage"></app-error-alert>
+            <app-success-alert *ngIf="isSignupSuccess" [message]="message"></app-success-alert>
+        </div>
+
+    </div>
+</div>
+

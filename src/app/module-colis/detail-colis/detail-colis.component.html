@@ -1,0 +1,117 @@
+<div class="col-md-12">
+    <div class="card" *ngIf="colis">
+        <div class="card-header">
+            <h2><i class="align-middle fas fa-fw fa-shopping-bag"></i> <span class="align-middle">{{
+                    colis.commercialProvider.companyName }}</span></h2>
+            <agm-map appDirectionsMap [showDirection]="showDirection" [origin]="origin" [destination]="destination"
+                [zoom]="zoom" [disableDefaultUI]="false" [zoomControl]="false">
+                <div *ngIf="markers.length>1">
+                    <agm-marker *ngFor="let marker of markers; let i = index" [latitude]="marker.lat"
+                        [longitude]="marker.lng" [label]="marker.label">
+
+                        <agm-info-window>
+                            <strong *ngIf="marker.commercialProvider">{{marker?.commercialProvider?.companyName}} |
+                            </strong>{{marker.address}}
+                        </agm-info-window>
+                    </agm-marker>
+                </div>
+            </agm-map>
+        </div>
+        <div class="card-title">
+            <div class="row d-flex align-items-center" id="row">
+                <div class="col-md-4 float-left">
+                    <div class="delivery-type mt-2">
+                        <h5 class="badge badge-danger align-middle" *ngIf="colis.deliveryType == 'SUPER_RUSH'">
+                            Livraison super urgente | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison |
+                            date}}
+                        </h5>
+                        <h5 class="badge badge-warning align-middle" *ngIf="colis.deliveryType == 'RUSH'">
+                            Livraison urgente | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison | date}}
+                        </h5>
+                        <h5 class="badge badge-info align-middle text-center" *ngIf="colis.deliveryType == 'SAME_DAY'">
+                            Livraison le jour même | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison |
+                            date}}</h5>
+                        <h5 class="badge badge-success align-middle text-center"
+                            *ngIf="colis.deliveryType == 'NEXT_DAY'">
+                            Livraison le lendemain | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison |
+                            date}}
+                        </h5>
+                        <h5 class="badge badge-primary align-middle text-center"
+                            *ngIf="colis.deliveryType == 'STANDARD'">
+                            Livraison standard | <i class="far fa-calendar-alt mr-1"></i>{{colis.dateLivraison | date}}
+                        </h5>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5 class="badge badge-secondary mt-2 align-middle">
+                        Taille: {{ colis.size }}
+                        <i *ngIf="colis.size == 'XS'" class="align-middle fas fa-fw fa-glasses"></i>
+                        <i *ngIf="colis.size == 'S'" class="align-middle fas fa-fw fa-book"></i>
+                        <i *ngIf="colis.size == 'M'" class="align-middle fas fa-fw fa-desktop"></i>
+                        <i *ngIf="colis.size == 'L'" class="align-middle fas fa-fw fa-guitar"></i>
+                        <i *ngIf="colis.size == 'XL'" class="align-middle fas fa-fw fa-couch"></i>
+                        <i *ngIf="colis.size == 'XXL'" class="align-middle fas fa-fw fa-warehouse"></i>
+                    </h5>
+                </div>
+                <div class="col-md-4 float-right ">
+                    <small class="text-navy">Publié: {{colis.created | date}}</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+
+            <div class="content">
+                <div class="row d-flex align-items-center">
+                    <div class="col-6 col-md-6">
+                        <ngb-carousel class="text-center" *ngIf="colis.imageColis">
+                            <ng-template ngbSlide *ngFor="let image of colis.imageColis">
+                                <div>
+                                    <img class="img-fluid img-thumbnail" [src]="imageUrl+image.imageName">
+                                </div>
+                            </ng-template>
+                        </ngb-carousel>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row d-flex flex-column">
+                            <div class="col-md-8 text-center">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5>
+                                            <i class="align-middle mr-2 fas fa-fw fa-map"></i>
+                                            <span class="align-middle">Départ</span>
+                                        </h5>
+                                        <p class="card-text">{{colis.commercialProvider.country}},
+                                            {{colis.commercialProvider.city}},
+                                            {{colis.commercialProvider.companyAddress}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <div class="card border">
+                                    <div class="card-body">
+                                        <h5>
+                                            <i class="align-middle mr-2 fas fa-fw fa-map-marker-alt"></i>
+                                            <span class="align-middle">Arrivé</span>
+                                        </h5>
+                                        <p class="card-text">{{ colis.countryDestinataire }}, {{ colis.stateDestinataire
+                                            }},
+                                            {{colis.adresseDestinataire }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-body text-center">
+                    <button class="btn btn-pill btn-warning" (click)="openModal()">Livrer ce colis</button>
+                    <button class="btn btn-pill btn-primary ml-2" (click)="openModal()">Affecter ce colis à un livreur</button>
+                    <button class="btn btn-pill btn-secondary ml-2">Secondary</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

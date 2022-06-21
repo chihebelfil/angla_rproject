@@ -1,0 +1,137 @@
+<p-toast></p-toast>
+
+<div class="card">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button class="btn btn-success mr-2" (click)="openNew()"><i class="align-middle mr-2" data-feather="user-plus"></i> <span class="align-middle"></span>Ajouter</button>
+            <button class="btn btn-danger" (click)="deleteSelectedDeliverMen()" [disabled]="!selectedDeliveryMen || !selectedDeliveryMen.length"><i class="align-middle mr-2" data-feather="trash-2"></i> <span class="align-middle"></span>Supprimer</button>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+            <div class="p-d-flex">
+                <div id="input_container">
+                    
+                    <input class="form-control" type="text" (input)="dt.filterGlobal($event.target.value, 'contains')" placeholder="Chercher..."/>
+                    <i data-feather="search" id="input_img"></i>
+                </div>
+            </div>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="deliveryMen" [rows]="10" [paginator]="true" [globalFilterFields]="['username','email']"
+    [(selection)]="selectedDelivery" [rowHover]="true" dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true" styleClass="p-datatable-responsive-demo">
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox [value]="deliveryMen"> </p-tableHeaderCheckbox>
+            </th>
+            <th pSortableColumn="email">Nom<p-sortIcon field="firstName"></p-sortIcon></th>
+            <th pSortableColumn="email">Prénom<p-sortIcon field="lastName"></p-sortIcon></th>
+            <th >Image</th>
+            <th pSortableColumn="email">Email<p-sortIcon field="email"></p-sortIcon></th>
+            <th pSortableColumn="username">Username<p-sortIcon field="username"></p-sortIcon></th>
+            <th pSortableColumn="phoneNumber">Téléphone<p-sortIcon field="phoneNumber"></p-sortIcon></th>
+            <th pSortableColumn="country">Pays<p-sortIcon field="country"></p-sortIcon></th>
+            <th pSortableColumn="city">Ville<p-sortIcon field="city"></p-sortIcon></th>
+            <th pSortableColumn="address">Adresse<p-sortIcon field="address"></p-sortIcon></th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-deliveryMan>
+        <tr [pSelectableRow]="deliveryMan" >
+            <td>
+                <p-tableCheckbox [value]="deliveryMan"></p-tableCheckbox>
+            </td>
+            <td>{{deliveryMan.firstName}}</td>
+            <td>{{deliveryMan.lastName}}</td>
+            <td><img [src]="imageUrl + deliveryMan?.image" [alt]="deliveryMan.username" width="100" class="p-shadow-4" /></td>
+            <td>{{deliveryMan.email}}</td>
+            <td>{{deliveryMan.username}}</td>
+            <td>{{deliveryMan.phoneNumber}}</td>
+            <td>{{deliveryMan.country}}</td>
+            <td>{{deliveryMan.city}}</td>
+            <td>{{deliveryMan.address}}, {{deliveryMan.zipCode}}</td>
+            <td>
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                    (click)="editDeliveryMan(deliveryMan)"></button>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                    (click)="deleteDeliveryMan(deliveryMan)"></button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+        <div class="p-d-flex p-ai-center p-jc-between">
+            In total there are {{deliveryMen ? deliveryMen.length : 0 }} Delivery Men.
+        </div>
+    </ng-template>
+</p-table>
+</div>
+
+<p-dialog [(visible)]="deliveryDialog" [style]="{width: '600px'}" header="Delivery Man Details" [modal]="true" styleClass="p-fluid">
+    <ngx-spinner bdColor = "rgba(0, 0, 0, 0.8)" size = "medium" color = "#fff" type = "square-jelly-box" [fullScreen] = "false"><p style="color: white" > Loading... </p></ngx-spinner>
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="firstName">Nom</label>
+            <input type="text" pInputText id="firstName" [(ngModel)]="deliveryMan.firstName" required/>
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.firstName">Nom is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="lastName">Prénom</label>
+            <input type="text" pInputText id="lastName" [(ngModel)]="deliveryMan.lastName" required/>
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.lastName">Email is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="email">Email</label>
+            <input type="text" pInputText id="email" [(ngModel)]="deliveryMan.email" required/>
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.email">Email is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="phoneNumber">Téléphone</label>
+            <input type="number" pInputText id="phoneNumber" [(ngModel)]="deliveryMan.phoneNumber" required/>
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.phoneNumber">Téléphone is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="username">Username</label>
+            <input type="text" pInputText id="username" [(ngModel)]="deliveryMan.username" required />
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.username">Username is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="password">Password</label>
+            <input type="text" pInputText id="password" [(ngModel)]="deliveryMan.password" required />
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.password">Password is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="country">Pays</label>
+            <p-dropdown [options]="countries" placeholder="Choisir votre pays" [(ngModel)]="selectedCity" (ngModelChange)="onChangeCountry($event)" optionLabel="name" optionDisabled="inactive"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !selectedCity">Pays is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="city">Ville</label>
+            <p-dropdown [options]="states" placeholder="Choisir votre governorat" [(ngModel)]="selectedState" (ngModelChange)="onChangeState($event)" optionLabel="name" optionDisabled="inactive"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !selectedState">Etat is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="address">Adresse</label>
+            <input type="text" pInputText id="address" [(ngModel)]="deliveryMan.address" required/>
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.address">Adresse is required.</small>
+        </div>
+        <div class="p-field">
+            <label for="zipCode">Code postal</label>
+            <input type="text" pInputText id="zipCode" [(ngModel)]="deliveryMan.zipCode" required/>
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.zipCode">code postal is required.</small>
+        </div>
+        <div class="p-field">
+            <label class="form-label w-100">Photo de profile</label>
+            <input type="file" (change)="selectFile($event)"/>
+            <small class="p-invalid" *ngIf="submitted && !deliveryMan.image">Photo de profile is required.</small>
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveDeliveryMan()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
